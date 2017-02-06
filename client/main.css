@@ -1,0 +1,65 @@
+/* CSS declarations go here */
+html, body
+{
+    height:100%;
+}
+
+.main
+{
+    height:100%;
+    padding: 0px;
+}
+.main .navbar
+{
+    background: #f3f3f3;
+    border-bottom: 1px solid #e0e0e0;
+}
+.main .top-bar input
+{
+    padding-right: 30px;
+}
+.main .top-bar .glyphicon-search
+{
+    top: 10px;
+    right: 24px;
+    color: #6c6c6c;
+    position: absolute;
+}
+
+.main .side-bar .glyphicon-edit
+{
+    position: absolute;
+    right: 4px;
+    top: 14px;
+}
+
+.main .main-content
+{
+    position:absolute;
+    top:120px;
+    bottom:120px;
+    left:0px;
+    right:0px;
+}
+.main .main-content > .panel
+{
+    height: 100%;
+}
+
+.main .tool-bar
+{
+    position:absolute;
+    height: 60px;
+    bottom:60px;
+    left:0px;
+    right:0px;
+}
+
+.main footer
+{
+    position:absolute;
+    height: 40px;
+    bottom:0px;
+    left:0px;
+    right:0px;
+}
