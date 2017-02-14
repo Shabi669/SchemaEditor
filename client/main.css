@@ -1,7 +1,52 @@
-/* CSS declarations go here */
 html, body
 {
     height:100%;
+}
+
+.invalid
+{
+    color: #ff9966;
+}
+.glyphicon.disabled
+{
+    opacity: 0.5;
+}
+.dropdown-toggle
+{
+    cursor: pointer;
+}
+.dropdown-menu li
+{
+    cursor: pointer;
+}
+
+.properties table tr
+{
+    cursor:pointer;
+}
+.properties table tr.derived
+{
+    background: #ffeecc;
+}
+.properties table tr.derived .glyphicon
+{
+    display: none;
+}
+.properties table tr td:last-child
+{
+    text-align: right;
+}
+.properties table tr:hover td
+{
+    background: #337ab7;
+    color: #ffffff;
+}
+
+.panel .panel-heading .glyphicon
+{
+    position: absolute;
+    right: 24px;
+    top:12px;
 }
 
 .main
@@ -26,11 +71,32 @@ html, body
     position: absolute;
 }
 
-.main .side-bar .glyphicon-edit
+.main .side-bar
+{
+    
+}
+.main .side-bar .list-group-item
+{
+    cursor: pointer;
+}
+.main .side-bar .list-group-item a
+{
+    color:#000000;
+}
+.main .side-bar .list-group-item.active a
+{
+    color:#000000;
+}
+
+.main .side-bar .icons
 {
     position: absolute;
-    right: 4px;
+    right: 8px;
     top: 14px;
+}
+.main .side-bar .icons .glyphicon
+{
+    cursor: pointer;
 }
 
 .main .main-content
