@@ -49,19 +49,19 @@
                   <span class="icons">
                     <span class="glyphicon glyphicon-edit" title="Edit" ng-click="entity.edit(item)"></span>
 
-                    <span class="dropdown">
+                  <span class="dropdown">
                       <span class="dropdown-toggle" type="button" data-toggle="dropdown">
                         <span class="glyphicon glyphicon-save-file" title="Export to file"></span>
-                      </span>
+                  </span>
 
-                      <ul class="dropdown-menu dropdown-menu-right">
-                        <li><a href="/file/{{item._id}}/normal">Schema</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="/file/{{item._id}}/flat">Flat Schema</a></li>
-                      </ul>
-                    </span>
+                  <ul class="dropdown-menu dropdown-menu-right">
+                    <li><a href="/file/{{item._id}}/normal">Schema</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="/file/{{item._id}}/flat">Flat Schema</a></li>
+                  </ul>
+                  </span>
 
-                    <span class="glyphicon glyphicon-remove" title="Edit" ng-click="entity.remove(item); $event.stopPropagation();"></span>
+                  <span class="glyphicon glyphicon-remove" title="Edit" ng-click="entity.remove(item); $event.stopPropagation();"></span>
                   </span>
                 </div>
               </div>
@@ -81,34 +81,7 @@
             </div>
             <div class="panel-body">
 
-              <table class="table table-striped" ng-show="entity.selected">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Type</th>
-                    <th>Mandatory</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr ng-repeat="item in entity.properties | filter:property.filter | orderBy:'title'" ng-class="{derived: item.entityID != entity.selected._id}">
-                    <td>
-                      <span>{{item.title}}</span>
-                      <span>({{item.entity.title}})</span>
-                    </td>
-                    <td>
-                      <span ng-hide="item.type == 'common' || item.type == 'link'">{{item.type}}</span>
-                      <span ng-show="item.type == 'common' || item.type == 'link'">{{entity.byID(item.targetType).title}}</span>
-                      <span ng-show="item.multiple">[ ]</span>
-                    </td>
-                    <td>{{item.required}}</td>
-                    <td>
-                      <span class="glyphicon glyphicon-edit" title="Edit" ng-click="property.edit(entity.selected, item)"></span>
-                      <span class="glyphicon glyphicon-remove" title="Edit" ng-click="property.remove(entity.selected, item)"></span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+              <property-table entity="entity.selected" filter="property.filter" api="property"></property-table>
 
             </div>
           </div>
@@ -120,7 +93,7 @@
       <!-- Footer -->
       <footer>
         <span>{{test | json}}</span>
-        <test ng-if="entity.selected" entity="entity.selected"></test>
+        <!--<test ng-if="entity.selected" entity="entity.selected"></test>-->
       </footer>
 
       <!-- Edit Item Modal -->
@@ -284,3 +257,35 @@
     </div>
 
   </body>
+
+
+  <!--<property-table entity="entity.selected"></property-table>-->
+
+  <!--<table class="table table-striped" ng-show="entity.selected">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Mandatory</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="item in entity.properties | filter:property.filter | orderBy:'title'" ng-class="{derived: item.entityID != entity.selected._id}">
+                    <td>
+                      <span>{{item.title}}</span>
+                      <span>({{item.entity.title}})</span>
+                    </td>
+                    <td>
+                      <span ng-hide="item.type == 'common' || item.type == 'link'">{{item.type}}</span>
+                      <span ng-show="item.type == 'common' || item.type == 'link'">{{entity.byID(item.targetType).title}}</span>
+                      <span ng-show="item.multiple">[ ]</span>
+                    </td>
+                    <td>{{item.required}}</td>
+                    <td>
+                      <span class="glyphicon glyphicon-edit" title="Edit" ng-click="property.edit(entity.selected, item)"></span>
+                      <span class="glyphicon glyphicon-remove" title="Edit" ng-click="property.remove(entity.selected, item)"></span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>-->

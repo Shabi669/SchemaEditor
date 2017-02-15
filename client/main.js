@@ -1,7 +1,6 @@
 //================================================== Dependencies ==================================================//
 import angular from 'angular';
 import { Meteor } from 'meteor/meteor';
-import angularGrid from 'angular-ui-grid';
 import angularMeteor from 'angular-meteor';
 import utils from '../imports/scripts/utils.js';
 
@@ -10,54 +9,83 @@ import { Entities } from '../collections/entities';
 import { Properties } from '../collections/properties';
 
 //================================================== Components ==================================================//
-import { name as EntityList } from '../imports/components/entities/list';
-import { name as EntityEdit } from '../imports/components/entities/edit';
+// import { name as EntityList } from '../imports/components/entities/list';
+// import { name as EntityEdit } from '../imports/components/entities/edit';
+import { name as propertyTable } from '/imports/components/properties/table/table';
 
 //================================================== Application Module ==================================================//
-var ngApplication = angular.module('ngApplication', [angularMeteor, angularGrid, EntityList, EntityEdit]);
+var ngApplication = angular.module('ngApplication', [angularMeteor, propertyTable]);
 
-ngApplication.directive('test', ['$compile', function ($compile)
-{
-  return {
-    restirct: 'E',
-    scope: { entity: '=' },
-    link: function (scope, element, controller)
-    {
-      console.log(scope.entity.title);
-
-      var container = angular.element('<div class="container"></div>');
-
-      element.replaceWith(container);
-
-      scope.$watch('entity.base', function()
-      {
-        scope.redraw();
-      });
-
-      scope.redraw = function()
-      {
-          console.log('redraw')
-
-          container.html('');
-
-          var template = '<div>{{entity.title}}';
-          scope.base = Entities.findOne({ _id: scope.entity.base });
-          if (scope.entity.base)
-          {
-            template += '<test entity="base"></test>';
-          }
-          template += '</div>';
-
-          var newElement = angular.element(template);
-          $compile(newElement)(scope);
-
-          container.append(newElement);
-      }
+//================================================== Directives ==================================================//
+// import temp from '/imports/components/properties/table/body.ng.html';
+// ngApplication.directive('propertyTableBody', ['$compile', function ($compile)
+// {
+//   return {
+//     restirct: 'E', 
+//     replace: true,
+//     scope: { entity: '=' },
+//     //template: '<div><ptable ng-if="base" entity="base"></ptable><div ng-repeat="item in properties">{{item.title}}</div></div>',
+//     templateUrl: temp,
+//     link: function (scope, element, controller)
+//     {
+//       scope.properties = [];
       
-      
-    }
-  };
-}]);
+//       scope.renderProperties = function (entity)
+//       {
+//         if (!entity) return;
+
+//         console.log(entity.title);
+
+//         scope.base = Entities.findOne({_id: entity.base});
+//         scope.properties = Properties.find({ entityID: entity._id }).fetch();
+//       }
+//       scope.$watch('entity', function () { scope.renderProperties(scope.entity) });
+//     }
+//   };
+// }]);
+
+// ngApplication.directive('test', ['$compile', function ($compile)
+// {
+//   return {
+//     restirct: 'E',
+//     scope: { entity: '=' },
+//     link: function (scope, element, controller)
+//     {
+//       console.log(scope.entity.title);
+
+//       var container = angular.element('<div class="container"></div>');
+
+//       element.replaceWith(container);
+
+//       scope.$watch('entity.base', function()
+//       {
+//         scope.redraw();
+//       });
+
+//       scope.redraw = function()
+//       {
+//           console.log('redraw')
+
+//           container.html('');
+
+//           var template = '<div>{{entity.title}}';
+//           scope.base = Entities.findOne({ _id: scope.entity.base });
+//           if (scope.entity.base)
+//           {
+//             template += '<test entity="base"></test>';
+//           }
+//           template += '</div>';
+
+//           var newElement = angular.element(template);
+//           $compile(newElement)(scope);
+
+//           container.append(newElement);
+//       }
+
+
+//     }
+//   };
+// }]);
 
 //================================================== Page Controller ==================================================//
 var ngPageController = ngApplication.controller('ngPageController', ['$scope', '$timeout', '$http', '$filter', function ($scope, $timeout, $http, $filter)
@@ -253,7 +281,7 @@ var ngPageController = ngApplication.controller('ngPageController', ['$scope', '
 
     console.log('edit property for entity - ' + entity.title);
 
-    $scope.property.selected = property;
+    $scope.property.selected = angular.copy(property);
 
     $("#editPropertyModal").modal();
   }

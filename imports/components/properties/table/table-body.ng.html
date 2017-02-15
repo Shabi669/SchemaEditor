@@ -1,0 +1,20 @@
+<div>
+    <property-table-body ng-if="base" entity="base" filter="filter" api="api" type="base"></property-table-body>
+
+    <div>{{entity.title}}</div>
+    <div ng-repeat="item in properties | filter:{entityID: entity._id, title:filter.title} | orderBy:'title'" class="row" ng-class="type">
+        <div class="col-md-6">
+            <span>{{item.title}}</span>
+        </div>
+        <div class="col-md-2">
+            <span>{{item.type}}</span>
+        </div>
+        <div class="col-md-2">
+            <span>{{item.required}}</span>
+        </div>
+        <div class="col-md-2 actions">
+            <span class="glyphicon glyphicon-edit" title="Edit" ng-click="api.edit(entity, item)"></span>
+            <span class="glyphicon glyphicon-remove" title="Remove" ng-click="api.remove(entity, item)"></span>
+        </div>
+    </div>
+</div>

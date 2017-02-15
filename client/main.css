@@ -129,3 +129,46 @@ html, body
     left:0px;
     right:0px;
 }
+
+.property-table
+{}
+.property-table .row
+{
+    padding: 0px 10px;
+}
+
+.property-table-body
+{}
+.property-table-body .row
+{
+    cursor: pointer;
+}
+.property-table-body .row.base
+{
+    background: #ffeecc;
+}
+.property-table-body .row:hover
+{
+    background: #d9edf7;
+}
+.property-table-body .row div
+{
+    padding: 5px;
+    text-align: left;
+}
+.property-table-body .actions
+{
+    text-align: right;
+}
+.property-table-header
+{
+    font-weight: bold;
+    background: #d9edf7;
+    border: 1px solid #bce8f1;
+    border-radius: 3px 3px 0px 0px;
+}
+.property-table-header div
+{
+    padding: 8px 5px;   
+    text-align: left;
+}
