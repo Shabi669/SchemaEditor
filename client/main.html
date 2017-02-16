@@ -22,7 +22,7 @@
       <div class="main-content">
 
         <!-- Side Bar -->
-        <div class="side-bar col-lg-3">
+        <div class="col-lg-3 side-bar">
           <div class="panel panel-info">
 
             <div class="panel-heading">
@@ -41,17 +41,15 @@
 
             <div class="panel-body">
               <div class="list-group">
-                <div class="list-group-item" ng-repeat="item in filteredEntities = (entities | filter:entity.filter | orderBy:['metaType', 'title']) "
+                <div class="list-group-item {{item.metaType}}" ng-repeat="item in filteredEntities = (entities | filter:entity.filter | orderBy:['metaType', 'title']) "
                   ng-class="{active:item.title == entity.selected.title}" ng-click="entity.select(item)">
 
                   <span title="{{item._id}}">{{item.title}}</span>
 
                   <span class="icons">
-                    <span class="glyphicon glyphicon-edit" title="Edit" ng-click="entity.edit(item)"></span>
-
-                  <span class="dropdown">
-                      <span class="dropdown-toggle" type="button" data-toggle="dropdown">
-                        <span class="glyphicon glyphicon-save-file" title="Export to file"></span>
+                      <span class="dropdown" ng-if="item.metaType == 'entity'">
+                        <span class="dropdown-toggle" type="button" data-toggle="dropdown">
+                          <span class="glyphicon glyphicon-save-file" title="Export to file"></span>
                   </span>
 
                   <ul class="dropdown-menu dropdown-menu-right">
@@ -61,6 +59,7 @@
                   </ul>
                   </span>
 
+                  <span class="glyphicon glyphicon-edit" title="Edit" ng-click="entity.edit(item)"></span>
                   <span class="glyphicon glyphicon-remove" title="Edit" ng-click="entity.remove(item); $event.stopPropagation();"></span>
                   </span>
                 </div>
@@ -70,9 +69,20 @@
           </div>
         </div>
 
+        <!-- Entity Info -->
+        <div class="col-lg-9 fade-in" ng-if="entity.selected">
+          <div class="panel panel-info properties">
+            <div class="panel-heading">
+              <span>{{entity.selected.title}}</span>
+              <span class="glyphicon glyphicon-edit" ng-click="property.edit(entity.selected)"></span>
+            </div>
+            <div class="panel-body">
+            </div>
+          </div>
+        </div>
 
-        <!-- Table Area -->
-        <div class="col-lg-9">
+        <!-- Properties -->
+        <div class="col-lg-9" ng-if="entity.selected">
 
           <div class="panel panel-info properties">
             <div class="panel-heading">
@@ -85,14 +95,31 @@
 
             </div>
           </div>
-
-
         </div>
+
+        <!-- Links -->
+        <div class="col-lg-9 fade in out" ng-if="entity.selected">
+
+          <div class="panel panel-info properties">
+            <div class="panel-heading">
+              <span>Links</span>
+              <span class="glyphicon glyphicon-plus" ng-class="{disabled:!entity.selected}" ng-click="entity.edit(entity.selected)"></span>
+            </div>
+            <div class="panel-body">
+
+              <links-table entity="entity.selected" filter="link.filter" api="entity"></links-table>
+
+            </div>
+          </div>
+        </div>
+
+        <entity-list entities="entities"></entity-list>
+
       </div>
 
       <!-- Footer -->
       <footer>
-        <span>{{test | json}}</span>
+        <span>{{entity.selected | json}}</span>
         <!--<test ng-if="entity.selected" entity="entity.selected"></test>-->
       </footer>
 
@@ -124,12 +151,42 @@
                 </select>
               </div>
 
+              <!-- Entity -->
+              <div ng-if="entity.selected.metaType == 'entity'">
+
               <div class="form-group">
                 <label for="">Type Of</label>
-                <select class="form-control" ng-model="entity.selected.base" ng-options="item._id as item.title for item in entities | filter:{metaType:entity.selected.metaType}">
-                  <option value="">Select...</option>
-                </select>
+                <select class="form-control" ng-model="entity.selected.base" ng-options="item._id as item.title for item in entities | filter:entity.filters.inheritance('entity')">
+                    <option value="">Select...</option>
+                  </select>
               </div>
+
+            </div>
+
+              <!-- Entity Link -->
+              <div ng-if="entity.selected.metaType == 'link'">
+              <div class="form-group">
+                <label for="">Type Of</label>
+                <select class="form-control" ng-model="entity.selected.base" ng-options="item._id as item.title for item in entities | filter:entity.filters.inheritance('link')">
+                    <option value="">Select...</option>
+                  </select>
+              </div>
+
+              <div class="form-group">
+                <label for="">Source Type</label>
+                <select class="form-control" ng-model="entity.selected.source" ng-options="item._id as item.title for item in entities | filter:entity.filters.linkable">
+                    <option value="">Select...</option>
+                  </select>
+              </div>
+
+
+              <div class="form-group">
+                <label for="">Target Type</label>
+                <select class="form-control" ng-model="entity.selected.target" ng-options="item._id as item.title for item in entities | filter:entity.filters.linkable">
+                    <option value="">Select...</option>
+                  </select>
+              </div>
+            </div>
 
             </div>
 

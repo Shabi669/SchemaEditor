@@ -9,83 +9,13 @@ import { Entities } from '../collections/entities';
 import { Properties } from '../collections/properties';
 
 //================================================== Components ==================================================//
-// import { name as EntityList } from '../imports/components/entities/list';
+import { name as entityComponents } from '/imports/components/entities/components';
 // import { name as EntityEdit } from '../imports/components/entities/edit';
+import { name as linksTable } from '/imports/components/links/table/table';
 import { name as propertyTable } from '/imports/components/properties/table/table';
 
 //================================================== Application Module ==================================================//
-var ngApplication = angular.module('ngApplication', [angularMeteor, propertyTable]);
-
-//================================================== Directives ==================================================//
-// import temp from '/imports/components/properties/table/body.ng.html';
-// ngApplication.directive('propertyTableBody', ['$compile', function ($compile)
-// {
-//   return {
-//     restirct: 'E', 
-//     replace: true,
-//     scope: { entity: '=' },
-//     //template: '<div><ptable ng-if="base" entity="base"></ptable><div ng-repeat="item in properties">{{item.title}}</div></div>',
-//     templateUrl: temp,
-//     link: function (scope, element, controller)
-//     {
-//       scope.properties = [];
-      
-//       scope.renderProperties = function (entity)
-//       {
-//         if (!entity) return;
-
-//         console.log(entity.title);
-
-//         scope.base = Entities.findOne({_id: entity.base});
-//         scope.properties = Properties.find({ entityID: entity._id }).fetch();
-//       }
-//       scope.$watch('entity', function () { scope.renderProperties(scope.entity) });
-//     }
-//   };
-// }]);
-
-// ngApplication.directive('test', ['$compile', function ($compile)
-// {
-//   return {
-//     restirct: 'E',
-//     scope: { entity: '=' },
-//     link: function (scope, element, controller)
-//     {
-//       console.log(scope.entity.title);
-
-//       var container = angular.element('<div class="container"></div>');
-
-//       element.replaceWith(container);
-
-//       scope.$watch('entity.base', function()
-//       {
-//         scope.redraw();
-//       });
-
-//       scope.redraw = function()
-//       {
-//           console.log('redraw')
-
-//           container.html('');
-
-//           var template = '<div>{{entity.title}}';
-//           scope.base = Entities.findOne({ _id: scope.entity.base });
-//           if (scope.entity.base)
-//           {
-//             template += '<test entity="base"></test>';
-//           }
-//           template += '</div>';
-
-//           var newElement = angular.element(template);
-//           $compile(newElement)(scope);
-
-//           container.append(newElement);
-//       }
-
-
-//     }
-//   };
-// }]);
+var ngApplication = angular.module('ngApplication', [angularMeteor, propertyTable, linksTable, entityComponents]);
 
 //================================================== Page Controller ==================================================//
 var ngPageController = ngApplication.controller('ngPageController', ['$scope', '$timeout', '$http', '$filter', function ($scope, $timeout, $http, $filter)
@@ -157,7 +87,6 @@ var ngPageController = ngApplication.controller('ngPageController', ['$scope', '
   $scope.entity = {};
   $scope.entity.filter = {};
   $scope.entity.selected = null;
-  $scope.entity.validation = {};
   $scope.entity.properties = [];
 
   $scope.entity.create = function ()
@@ -183,9 +112,11 @@ var ngPageController = ngApplication.controller('ngPageController', ['$scope', '
 
     console.log('edit entity - ' + entity.title);
 
-    $scope.entity.select(entity);
+    $scope.entity.select(angular.copy(entity));
 
     $("#editEntityModal").modal();
+
+    $timeout(function(){console.log($scope.entity.selected)}, 1000);
   }
   $scope.entity.remove = function (entity, confirm)
   {
@@ -208,7 +139,7 @@ var ngPageController = ngApplication.controller('ngPageController', ['$scope', '
     console.log('selecting entity');
 
     $scope.entity.selected = entity;
-
+    
     $scope.entity.properties = $scope.property.getDerived(entity);
   }
   $scope.entity.submit = function (entity)
@@ -255,9 +186,33 @@ var ngPageController = ngApplication.controller('ngPageController', ['$scope', '
   {
     return Entities.findOne({ _id: id });
   }
+  $scope.entity.validation = {};
   $scope.entity.validation.title = function ()
   {
     return $scope.entity.selected && $scope.entity.selected.title;
+  }
+  $scope.entity.filters = {};
+  $scope.entity.filters.linkable = function(item)
+  {
+      var flag = item.metaType == 'entity';
+      return flag;
+  }
+  $scope.entity.filters.inheritance = function(type)
+  {
+    return function (item)
+    {
+      var flag = item._id != $scope.entity.selected._id;
+
+      switch  (type)
+      {
+        case 'link':
+          return flag && item.metaType == 'link' || item.metaType == 'base';
+        case 'entity':
+          return flag && item.metaType == 'entity' || item.metaType == 'base';
+      }
+      
+      return flag;
+    }
   }
 
   // Property

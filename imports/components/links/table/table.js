@@ -6,11 +6,11 @@ import { Entities } from '/collections/entities';
 import { Properties } from '/collections/properties';
 
 //================================================== Templates ==================================================//
-import table from '/imports/components/properties/table/table.ng.html';
-import tableBody from '/imports/components/properties/table/table-body.ng.html';
+import table from '/imports/components/links/table/table.ng.html';
+import tableBody from '/imports/components/links/table/table-body.ng.html';
 
-export default angular.module('propertyTable', [])
-    .directive('propertyTable', ['$compile', function ($compile)
+export default angular.module('linksTable', [])
+    .directive('linksTable', ['$compile', function ($compile)
     {
         return {
             restirct: 'E',
@@ -23,7 +23,7 @@ export default angular.module('propertyTable', [])
             }
         };
     }])
-    .directive('propertyTableBody', ['$compile', function ($compile)
+    .directive('linksTableBody', ['$compile', function ($compile)
     {
         return {
             restirct: 'E',
@@ -38,17 +38,17 @@ export default angular.module('propertyTable', [])
                     properties() { return Properties.find({}); }
                 });
 
-                scope.renderProperties = function (entity)
+                scope.render = function (entity)
                 {
                     if (!entity) return;
 
-                    console.log(entity.title);
+                    console.log('link - ' + entity.title);
 
                     if (!scope.base || scope.base._id != entity.base);
                     scope.base = Entities.findOne({ _id: entity.base });
                 }
-                scope.$watch('entity', function () { scope.renderProperties(scope.entity) });
-                scope.$watch('entity.base', function () { scope.renderProperties(scope.entity) });
+                scope.$watch('entity', function () { scope.render(scope.entity) });
+                scope.$watch('entity.base', function () { scope.render(scope.entity) });
             }
         };
     }]);

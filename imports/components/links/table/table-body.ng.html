@@ -1,7 +1,7 @@
 <div>
-    <property-table-body ng-if="base" entity="base" filter="filter" api="api" type="base"></property-table-body>
+    <links-table-body ng-if="base" entity="base" filter="filter" api="api" type="base"></links-table-body>
 
-    <div ng-repeat="item in properties | filter:{entityID: entity._id, title:filter.title} | orderBy:'title'" class="row" ng-class="type">
+    <div ng-repeat="item in entities | filter:{ metaType:'link', source:entity._id} | orderBy:'title'" class="row" ng-class="type">
         <div class="col-md-6">
             <span>{{item.title}}</span>
         </div>

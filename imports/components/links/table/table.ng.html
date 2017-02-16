@@ -1,11 +1,11 @@
 <div class="container-fluid panel panel-info property-table">
     <div class="row panel-heading property-table-header">
         <div class="col-md-6">Title {{properites | json}}</div>
+        <div class="col-md-2">Target</div>
         <div class="col-md-2">Type</div>
-        <div class="col-md-2">Required</div>
     </div>
 
     <div class="panel-body property-table-body">
-        <property-table-body ng-if="entity" entity="entity" filter="filter" api="api" type="entity"></property-table-body>
+        <links-table-body ng-if="entity" entity="entity" filter="filter" api="api" type="entity"></links-table-body>
     </div>
 </div>
