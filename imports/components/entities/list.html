@@ -1,1 +1,44 @@
-<h1 ng-repeat="item in $ctrl.entities">list</h1>
+<div class="panel panel-info">
+
+            <div class="panel-heading">
+              <div class="dropdown">
+                <span class="dropdown-toggle" type="button" data-toggle="dropdown">{{category.selected.title}}
+                  <span class="caret"></span>
+                </span>
+                <ul class="dropdown-menu">
+                  <li ng-repeat="item in category.list">
+                    <a ng-click="category.set(item)">{{item.title}}</a>
+                  </li>
+                </ul>
+              </div>
+              <span class="glyphicon glyphicon-plus" ng-click="entity.edit()"></span>
+            </div>
+
+            <div class="panel-body">
+              <div class="list-group">
+                <div class="list-group-item {{item.metaType}}" ng-repeat="item in filteredEntities = ($ctrl.entities | filter:entity.filter | orderBy:['metaType', 'title']) "
+                  ng-class="{active:item.title == entity.selected.title}" ng-click="entity.select(item)">
+
+                  <span title="{{item._id}}">{{item.title}}</span>
+
+                  <span class="icons">
+                      <span class="dropdown" ng-if="item.metaType == 'entity'">
+                        <span class="dropdown-toggle" type="button" data-toggle="dropdown">
+                          <span class="glyphicon glyphicon-save-file" title="Export to file"></span>
+                  </span>
+
+                  <ul class="dropdown-menu dropdown-menu-right">
+                    <li><a href="/file/{{item._id}}/normal">Schema</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="/file/{{item._id}}/flat">Flat Schema</a></li>
+                  </ul>
+                  </span>
+
+                  <span class="glyphicon glyphicon-edit" title="Edit" ng-click="entity.edit(item)"></span>
+                  <span class="glyphicon glyphicon-remove" title="Edit" ng-click="entity.remove(item); $event.stopPropagation();"></span>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+          </div>

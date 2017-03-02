@@ -2,6 +2,7 @@
 import angular from 'angular';
 import { Meteor } from 'meteor/meteor';
 import angularMeteor from 'angular-meteor';
+import ngMaterial from 'angular-material';
 import utils from '../imports/scripts/utils.js';
 
 //================================================== Collections ==================================================//
@@ -15,10 +16,10 @@ import { name as linksTable } from '/imports/components/links/table/table';
 import { name as propertyTable } from '/imports/components/properties/table/table';
 
 //================================================== Application Module ==================================================//
-var ngApplication = angular.module('ngApplication', [angularMeteor, propertyTable, linksTable, entityComponents]);
+var ngApplication = angular.module('ngApplication', [angularMeteor, ngMaterial, propertyTable, linksTable, entityComponents]);
 
 //================================================== Page Controller ==================================================//
-var ngPageController = ngApplication.controller('ngPageController', ['$scope', '$timeout', '$http', '$filter', function ($scope, $timeout, $http, $filter)
+var ngPageController = ngApplication.controller('ngPageController', ['$scope', '$timeout', '$http', '$filter', '$mdDialog', function ($scope, $timeout, $http, $filter, $mdDialog)
 {
   // Collections
   $scope.helpers({
@@ -83,6 +84,24 @@ var ngPageController = ngApplication.controller('ngPageController', ['$scope', '
     $scope.entity.selectFirst();
   }
 
+  // Helpers
+  $scope.isEntity = function()
+  {
+    return $scope.entity.selected && $scope.entity.selected.metaType == 'entity';
+  }
+  $scope.isCommon = function()
+  {
+    return $scope.entity.selected && $scope.entity.selected.metaType == 'common';
+  }
+  $scope.isLink = function()
+  {
+    return $scope.entity.selected && $scope.entity.selected.metaType == 'link';
+  }
+  $scope.isEnum = function()
+  {
+    return $scope.entity.selected && $scope.entity.selected.metaType == 'enum';
+  }
+
   // Entity
   $scope.entity = {};
   $scope.entity.filter = {};
@@ -96,6 +115,12 @@ var ngPageController = ngApplication.controller('ngPageController', ['$scope', '
       metaType: 'entity'
     }
   }
+  $scope.entity.isDirty = function ()
+  {
+    return $scope.entity.original
+      && $scope.entity.original.base == $scope.entity.selected.base
+      && $scope.entity.original.title == $scope.entity.selected.title;
+  }
   $scope.entity.selectFirst = function ()
   {
     $timeout(function ()
@@ -107,16 +132,11 @@ var ngPageController = ngApplication.controller('ngPageController', ['$scope', '
   {
     if (!entity) entity = $scope.entity.create();
 
-    if ($scope.category.selected.name != 'all')
-      entity.metaType = $scope.category.selected.name;
-
     console.log('edit entity - ' + entity.title);
 
     $scope.entity.select(angular.copy(entity));
 
-    $("#editEntityModal").modal();
-
-    $timeout(function(){console.log($scope.entity.selected)}, 1000);
+    $('.info input:eq(0)').focus();
   }
   $scope.entity.remove = function (entity, confirm)
   {
@@ -138,9 +158,16 @@ var ngPageController = ngApplication.controller('ngPageController', ['$scope', '
   {
     console.log('selecting entity');
 
-    $scope.entity.selected = entity;
-    
-    $scope.entity.properties = $scope.property.getDerived(entity);
+    $scope.property.selected = null;
+    $scope.entity.original = entity;
+    $scope.entity.selected = angular.copy(entity);
+
+    if (entity)
+    {
+      $scope.property.filter.entityID = entity._id;
+
+      $scope.entity.properties = $scope.property.getDerived(entity);
+    }
   }
   $scope.entity.submit = function (entity)
   {
@@ -164,7 +191,7 @@ var ngPageController = ngApplication.controller('ngPageController', ['$scope', '
 
     $scope.entity.select(entity);
   }
-  $scope.entity.download = function (entity, isFlat)
+  $scope.entity.download = function (entity, mode)
   {
     // Meteor.call('test', '123', function(err, response) 
     // {
@@ -173,7 +200,8 @@ var ngPageController = ngApplication.controller('ngPageController', ['$scope', '
 
     console.log('download entity - ' + entity.title);
 
-    $http.get('/file/' + entity._id);
+    window.location = '/file/' + entity._id;
+    //$http.get('/file/' + entity._id);
   }
   $scope.entity.keyDown = function (event)
   {
@@ -192,27 +220,36 @@ var ngPageController = ngApplication.controller('ngPageController', ['$scope', '
     return $scope.entity.selected && $scope.entity.selected.title;
   }
   $scope.entity.filters = {};
-  $scope.entity.filters.linkable = function(item)
+  $scope.entity.filters.linkable = function (item)
   {
-      var flag = item.metaType == 'entity';
-      return flag;
+    var flag = item.metaType == 'entity';
+    return flag;
   }
-  $scope.entity.filters.inheritance = function(type)
+  $scope.entity.filters.inheritance = function (item)
   {
-    return function (item)
-    {
-      var flag = item._id != $scope.entity.selected._id;
+    return item
+        && $scope.entity.selected
+        && item._id != $scope.entity.selected._id
+        && item.metaType == $scope.entity.selected.metaType;
 
-      switch  (type)
-      {
-        case 'link':
-          return flag && item.metaType == 'link' || item.metaType == 'base';
-        case 'entity':
-          return flag && item.metaType == 'entity' || item.metaType == 'base';
-      }
+    // return function (item)
+    // {
       
-      return flag;
-    }
+    // }
+  }
+
+  // Enum
+  $scope.enum = {};
+  $scope.enum.newValue = '';
+
+  $scope.enum.add = function(value)
+  {
+    if (!$scope.entity.selected.values)
+      $scope.entity.selected.values = [];
+
+    $scope.entity.selected.values.push(value);
+
+    $scope.enum.newValue = '';
   }
 
   // Property
@@ -223,59 +260,82 @@ var ngPageController = ngApplication.controller('ngPageController', ['$scope', '
 
   $scope.property.create = function (entity)
   {
+    if (!entity) entity = $scope.entity.selected;
+
     return {
       entityID: entity._id,
       type: 'string',
       ref: {}
     }
   }
-  $scope.property.edit = function (entity, property)
+  $scope.property.select = function (property)
   {
-    if (!entity) return;
+    $scope.property.original = property;
+    $scope.property.selected = angular.copy(property);
+  }
+  $scope.property.edit = function (property)
+  {
     if (!property) property = $scope.property.create(entity);
+
+    var entity = $scope.entity.byID(property.entityID);
+
+    if (!entity) entity = $scope.entity.selected;
 
     console.log('edit property for entity - ' + entity.title);
 
+    $scope.property.original = property;
     $scope.property.selected = angular.copy(property);
-
-    $("#editPropertyModal").modal();
   }
-  $scope.property.remove = function (entity, property, confirm)
+  $scope.property.remove = function (property)
   {
-    if (!entity) return;
     if (!property) return;
+
+    var entity = $scope.entity.byID(property.entityID);
+
+    if (!entity) return;
 
     console.log('remove property for entity - ' + entity.title);
 
-    $scope.property.pending = property;
+    var confirm = $mdDialog.confirm()
+      .title('Remove property')
+      .textContent('Are you sure you want to remove this property ?')
+      .ariaLabel('Lucky day')
+      //.targetEvent(ev)
+      .ok('Remove')
+      .cancel('Cancel');
 
-    if (confirm)
+    $mdDialog.show(confirm).then(function ()
     {
       Properties.remove({ _id: property._id });
-      $scope.entity.properties = $scope.property.getDerived(entity);
-    }
-    else
-      $("#removePropertyModal").modal();
+    }, function ()
+      {
+
+      });
+
+    $scope.property.pending = property;
   }
-  $scope.property.submit = function (entity, property)
+  $scope.property.submit = function (property)
   {
+    var id = property._id;
+    var entity = $scope.entity.byID(property.entityID);
+
     if (!entity || !property) return;
     if (!property.title || !property.type) return;
 
     console.log('submit property for entity - ' + entity.title);
 
-    var temp = angular.copy(property);
-    delete temp._id;
-
-    if (property._id)
-      Properties.update({ _id: property._id }, temp);
+    if (id)
+    {
+      delete property._id;
+      Properties.update({ _id: id }, property);
+    }
     else
     {
       property._id = Properties.insert(property);
-      $scope.entity.properties = $scope.property.getDerived(entity);
+      //$scope.entity.properties = $scope.property.getDerived(entity);
     }
 
-    $('#editPropertyModal').modal('hide');
+    $scope.property.selected = null;
   }
   $scope.property.keyDown = function (event)
   {

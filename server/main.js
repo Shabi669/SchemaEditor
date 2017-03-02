@@ -85,6 +85,11 @@ WebApp.connectHandlers.use("/file/", function (req, res, next)
 
   var output = exportEntity(entity, properties);
 
+  res.writeHead(200, {
+    'Content-Type': 'text/plain',
+    'Content-disposition': 'attachment; filename=' + entity.title + '.schema'
+  });
+  
   res.end(JSON.stringify(output));
   /*
     if (entity)

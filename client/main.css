@@ -1,6 +1,7 @@
 html, body
 {
     height:100%;
+    background: #fff0f0;
 }
 
 .invalid
@@ -58,26 +59,35 @@ html, body
 {
     background: #f3f3f3;
     border-bottom: 1px solid #e0e0e0;
+    padding: 0px 15px;
+    height: 60px;
 }
-.main .top-bar input
+.main .navbar .search
+{
+    position: relative;
+    margin-bottom: 0px;
+}
+.main .navbar .search input
 {
     padding-right: 30px;
 }
-.main .top-bar .glyphicon-search
+.main .navbar .search i
 {
-    top: 10px;
-    right: 24px;
+    top: 22px;
+    right: 10px;
     color: #6c6c6c;
     position: absolute;
+    font-size: 16px;
 }
 
 .main .side-bar
 {
     height: 100%;
+    width: 300px;
 }
-.main .side-bar .panel
+.main .side-bar md-card
 {
-    height: 100%;    
+    margin: 8px 0px;
 }
 .main .side-bar .link
 {
@@ -93,7 +103,7 @@ html, body
 }
 .main .side-bar .common
 {
-    background: #fff0f0;
+    
 }
 .main .side-bar .list-group-item
 {
@@ -122,13 +132,19 @@ html, body
     cursor: pointer;
 }
 
+.side-bar md-list .md-subheader
+{
+    margin-left: -8px;
+}
+
 .main .main-content
 {
     position:absolute;
-    top:120px;
-    bottom:120px;
+    top:100px;
+    bottom:40px;
     left:0px;
     right:0px;
+    padding: 0px 15px;
 }
 .main .main-content > .panel
 {
@@ -196,9 +212,52 @@ html, body
     text-align: left;
 }
 
+md-card
+{
+    overflow: hidden;
+}
+.property-edit-panel
+{
+    position: absolute;
+    top: 0px;
+    width:100%;
+    bottom: 0px;
+    background: #ffffff;
+    margin: 0px;
+}
+.property-edit-panel md-card-content
+{
+    padding-top: 16px;
+}
+.property-edit-panel md-switch
+{
+    margin-top: 0px;
+}
+
 @-webkit-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
 @-moz-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
 @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+@keyframes slideIn { from { left:-100%; } to { left:0%; } }
+@keyframes slideOut { from { left:0%; } to { left:-100%; } }
+
+.slide-out
+{
+    left: 0%;
+
+    animation:slideIn ease-in 1;
+    -moz-animation:slideIn ease-in 1;
+    -webkit-animation:slideIn ease-in 1;  
+    
+
+    animation-fill-mode:forwards;
+    -moz-animation-fill-mode:forwards;
+    -webkit-animation-fill-mode:forwards; 
+
+    animation-duration:.5s;      
+    -moz-animation-duration:.5s;
+    -webkit-animation-duration:.5s;
+}
 
 .fade-in {
   opacity:0;  /* make things invisible upon start */
@@ -213,4 +272,105 @@ html, body
   -webkit-animation-duration:1s;
   -moz-animation-duration:1s;
   animation-duration:1s;
+}
+
+.animated
+{
+    -webkit-transition: all 0.5s ease-in-out;
+    -moz-transition: all 0.5s ease-in-out;
+    -o-transition: all 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out;
+}
+md-list-item.selected div span
+{
+   font-weight: 800;
+}
+
+md-card md-card-title
+{
+    color: #ffffff;
+    background: #337ab7;
+    padding: 16px;
+    position: relative;
+    height: 50px;
+    flex:none;
+}
+md-card md-card-title .md-icon-button
+{
+    position: absolute;
+    right: 0px;
+    top: 8px;
+}
+
+.side-bar md-card-title i
+{
+    cursor: pointer;
+}
+.side-bar md-card-content
+{
+    overflow: hidden;
+    overflow-y: auto; 
+}
+
+md-card
+{
+    position: relative;
+}
+
+.table
+{
+    margin-bottom: 0px;
+}
+.table .table-row
+{
+    height: 30px;   
+    border: 1px solid #e0e0e0;
+    border-width: 0px 0px 1px 0px;
+}
+.table .table-row div
+{
+    padding: 5px;
+}
+.table .table-row button
+{
+    position: relative;
+    top: -10px;
+}
+.table .table-header
+{
+    font-weight: bold;
+    height: 30px;
+}
+.table .table-body
+{
+    overflow-y: auto;
+}
+
+
+
+.slide-in
+{
+    left: 0%;
+}
+
+.slide-in.ng-hide {
+  left: -100%;
+}
+.fade-in
+{
+    opacity: 1;
+}
+.fade-in.ng-hide
+{
+    opacity: 0;
+}
+
+.enumerations 
+{}
+.enumerations md-card-actions md-input-container
+{
+    height: 30px;
+    position: relative;
+    bottom: -3px;
+    margin:0px;
 }
