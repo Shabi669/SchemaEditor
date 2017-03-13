@@ -199,69 +199,114 @@
       <div layout="column" flex>
 
         <!-- Entity Info -->
-        <md-card class="info" layout="column">
+        <md-card class="info" layout="column" ng-show="entity.selected">
+          <form name="frmEntityInfo">
 
-          <md-card-content flex>
+            <md-card-content flex>
 
-            <div layout="row">
-              <md-input-container flex="50">
-                <label>Title</label>
-                <input ng-model="entity.selected.title" />
-              </md-input-container>
+              <!-- Title and inheritance -->
+              <div layout="row">
+                <md-input-container flex="50">
+                  <label>Title</label>
+                  <input ng-model="entity.selected.title" />
+                </md-input-container>
 
-              <md-input-container flex="25" flex-offset="15" ng-if="isEntity() || isLink()">
-                <label>Type of</label>
-                <md-select ng-model="entity.selected.base">
-                  <md-option value="">Select...</md-option>
-                  <md-option ng-repeat="item in entities | filter:entity.filters.inheritance" value="{{item._id}}">
-                    {{item.title}}
-                  </md-option>
-                </md-select>
-              </md-input-container>
-            </div>
+                <md-input-container flex="25" flex-offset="15" ng-if="isEntity() || isLink()">
+                  <label>Type of</label>
+                  <md-select ng-model="entity.selected.base">
+                    <md-option value="">Select...</md-option>
+                    <md-option ng-repeat="item in entities | filter:entity.filters.inheritance" value="{{item._id}}">
+                      {{item.title}}
+                    </md-option>
+                  </md-select>
+                </md-input-container>
+              </div>
 
-          </md-card-content>
+              <!-- Link source and target -->
+              <div layout="row" ng-show="isLink()">
+                <md-input-container flex="40">
+                  <label>Source</label>
+                  <md-select ng-model="entity.selected.source">
+                    <md-option value="">Select...</md-option>
+                    <md-option ng-repeat="item in entities | filter:{metaType: 'entity'}" value="{{item._id}}">
+                      {{item.title}}
+                    </md-option>
+                  </md-select>
+                </md-input-container>
 
-          <md-card-actions layout="row" layout-align="end center">
-            <md-button class="md-raised md-primary" ng-disabled="entity.isDirty()" ng-click="entity.submit(entity.selected)">Submit</md-button>
-          </md-card-actions>
+                <md-input-container flex="40" flex-offset="20">
+                  <label>Target</label>
+                  <md-select ng-model="entity.selected.target">
+                    <md-option value="">Select...</md-option>
+                    <md-option ng-repeat="item in entities | filter:{metaType: 'entity'}" value="{{item._id}}">
+                      {{item.title}}
+                    </md-option>
+                  </md-select>
+                </md-input-container>
+              </div>
 
+            </md-card-content>
+
+            <md-card-actions layout="row" layout-align="end center">
+              <md-button class="md-raised md-primary" ng-disabled="frmEntityInfo.$pristine" ng-click="entity.submit(entity.selected)">Submit</md-button>
+            </md-card-actions>
+
+          </form>
         </md-card>
 
         <div flex layout="column" layout-gt-md="row">
 
           <!-- Entity Properties -->
           <md-card class="properties" layout="column" ng-show="isEntity() || isLink() || isCommon()" flex>
-
+<!--
             <md-card-content layout="column" class="table" flex>
 
-              <div class="table-header">
-                <div layout="row" class="table-row">
-                  <div flex="40">Name</div>
-                  <div flex="20">Type</div>
-                  <div flex="20">Required</div>
-                  <div flex="20"></div>
-                </div>
-              </div>
+              
+            </md-card-content>-->
 
-              <div class="table-body" flex>
-                <div layout="row" class="table-row" ng-repeat="item in properties | filter:property.filter">
-                  <div flex="40">{{item.title}}</div>
-                  <div flex="20">{{item.type}}</div>
-                  <div flex="20">{{item.required}}</div>
-                  <div flex="20">
-                    <md-button class="md-icon-button" ng-click="property.edit(item)">
-                      <i class="fa fa-edit" />
-                    </md-button>
-                    <md-button class="md-icon-button" ng-click="property.remove(item)">
-                      <i class="fa fa-remove" />
-                    </md-button>
+            <md-tabs class="md-primary" md-selected="0" md-align-tabs="top">
+                <md-tab>
+                  <md-tab-label>Properties</md-tab-label>
+                  <md-tab-body layout="column" class="table">
 
-                  </div>
-                </div>
-              </div>
+                    <div class="table-header">
+                      <div layout="row" class="table-row">
+                        <div flex="40">Name</div>
+                        <div flex="20">Type</div>
+                        <div flex="20">Required</div>
+                        <div flex="20"></div>
+                      </div>
+                    </div>
 
-            </md-card-content>
+                    <div class="table-body" flex>
+                      <div layout="row" class="table-row" ng-repeat="item in properties | filter:property.filter">
+                        <div flex="40">{{item.title}}</div>
+                        <div flex="20">{{item.type}}</div>
+                        <div flex="20">{{item.required}}</div>
+                        <div flex="20">
+                          <md-button class="md-icon-button" ng-click="property.edit(item)">
+                            <i class="fa fa-edit" />
+                          </md-button>
+                          <md-button class="md-icon-button" ng-click="property.remove(item)">
+                            <i class="fa fa-remove" />
+                          </md-button>
+
+                        </div>
+                      </div>
+                    </div>
+                  </md-tab-body>
+                </md-tab>
+                <md-tab>
+                  <md-tab-label>Links</md-tab-label>
+                  <md-tab-body></md-tab-body>
+                </md-tab>
+                <md-tab>
+                  <md-tab-label>Meta</md-tab-label>
+                  <md-tab-body>
+
+                  </md-tab-body>
+                </md-tab>
+              </md-tabs>
 
             <md-card-actions layout="row" layout-align="end center">
               <md-button class="md-raised md-primary" ng-disabled="!entity.selected" ng-click="property.edit()">Add</md-button>
@@ -269,76 +314,193 @@
 
             <!-- Property Edit Panel -->
             <md-card class="property-edit-panel animated slide-in" ng-show="property.selected">
+              <form name="frmPropertyEdit" flex layout="column">
 
-              <md-card-title>
-                <md-card-title-text>
-                  <span>Edit Property</span>
-                  <md-button class="md-icon-button" ng-click="property.selected = null">
-                    <i class="fa fa-close" />
-                  </md-button>
-                </md-card-title-text>
-              </md-card-title>
+                <md-card-title>
+                  <md-card-title-text>
+                    <span>Edit Property</span>
+                    <md-button class="md-icon-button" ng-click="property.selected = null">
+                      <i class="fa fa-close" />
+                    </md-button>
+                  </md-card-title-text>
+                </md-card-title>
 
-              <md-card-content layout="column" flex>
+                <md-card-content flex layout="row" layout-md="column">
 
-                <!-- Title, Is Required, Is Array -->
-                <div layout="row">
-                  <md-input-container flex="50">
-                    <label>Title</label>
-                    <input ng-model="property.selected.title" />
-                  </md-input-container>
+                  <div class="column" flex>
 
-                  <div flex></div>
+                    <!-- Title -->
+                    <div layout="row">
+                      <md-input-container flex>
+                        <label>Title</label>
+                        <input ng-model="property.selected.title" />
+                      </md-input-container>
+                    </div>
 
-                  <md-input-container flex="15" class="md-input-has-value">
-                    <label>Is Required</label>
-                    <md-switch class="md-primary" ng-model="property.selected.required"></md-switch>
-                  </md-input-container>
+                    <!-- Description -->
+                    <div layout="row">
+                      <md-input-container flex>
+                        <label>Description</label>
+                        <input ng-model="property.selected.description" />
+                      </md-input-container>
+                    </div>
 
-                  <md-input-container flex="15" class="md-input-has-value">
-                    <label>Is Array</label>
-                    <md-switch class="md-primary" ng-model="property.selected.isArray"></md-switch>
-                  </md-input-container>
-                </div>
+                    <!-- Property Type -->
+                    <div layout="row">
+                      <md-input-container flex="45">
+                        <label>Type</label>
+                        <md-select ng-model="property.selected.type">
+                          <md-option value="string">String</md-option>
+                          <md-option value="number">Number</md-option>
+                          <md-option value="boolean">Boolean</md-option>
+                          <md-option value="enum">Enumeration</md-option>
+                          <md-option value="common">Common Type</md-option>
+                          <md-option value="link">Entity Link</md-option>
+                        </md-select>
+                      </md-input-container>
 
-                <!-- Property Type -->
-                <div layout="row">
-                  <md-input-container flex="45">
-                    <label>Type</label>
-                    <md-select ng-model="property.selected.type">
-                      <md-option value="string">String</md-option>
-                      <md-option value="number">Number</md-option>
-                      <md-option value="boolean">Boolean</md-option>
-                      <md-option value="common">Common Type</md-option>
-                      <md-option value="link">Entity Link</md-option>
-                    </md-select>
-                  </md-input-container>
+                      <div flex></div>
 
-                  <div flex></div>
+                      <!-- String Type -->
+                      <md-input-container flex="20" ng-show="property.selected.type == 'string'">
+                        <label>Min Length</label>
+                        <md-select ng-model="property.selected.type">
+                          <md-option value="string">String</md-option>
+                          <md-option value="number">Number</md-option>
+                          <md-option value="boolean">Boolean</md-option>
+                          <md-option value="enum">Enumeration</md-option>
+                          <md-option value="common">Common Type</md-option>
+                          <md-option value="link">Entity Link</md-option>
+                        </md-select>
+                      </md-input-container>
 
-                  <!-- Common Type -->
-                  <md-input-container flex="45" ng-show="property.selected.type == 'common'">
-                    <label>Common Type</label>
-                    <md-select ng-model="property.selected.targetType">
-                      <md-option ng-repeat="item in entities | filter:{metaType:'common'}" value="{{item._id}}">{{item.title}}</md-option>
-                    </md-select>
-                  </md-input-container>
+                      <!-- Common Type -->
+                      <md-input-container flex="45" ng-show="property.selected.type == 'common'">
+                        <label>Common Type</label>
+                        <md-select ng-model="property.selected.targetType">
+                          <md-option ng-repeat="item in entities | filter:{metaType:'common'}" value="{{item._id}}">{{item.title}}</md-option>
+                        </md-select>
+                      </md-input-container>
 
-                  <!-- Link Type -->
-                  <md-input-container flex="45" ng-show="property.selected.type == 'link'">
-                    <label>Link Type</label>
-                    <md-select ng-model="property.selected.targetType">
-                      <md-option ng-repeat="item in entities | filter:{metaType:'link'}" value="{{item._id}}">{{item.title}}</md-option>
-                    </md-select>
-                  </md-input-container>
+                      <!-- Link Type -->
+                      <md-input-container flex="45" ng-show="property.selected.type == 'link'">
+                        <label>Link Type</label>
+                        <md-select ng-model="property.selected.targetType">
+                          <md-option ng-repeat="item in entities | filter:{metaType:'link'}" value="{{item._id}}">{{item.title}}</md-option>
+                        </md-select>
+                      </md-input-container>
 
-                </div>
+                      <!-- Enum Type -->
+                      <md-input-container flex="45" ng-show="property.selected.type == 'enum'">
+                        <label>Link Type</label>
+                        <md-select ng-model="property.selected.targetType">
+                          <md-option ng-repeat="item in entities | filter:{metaType:'enum'}" value="{{item._id}}">{{item.title}}</md-option>
+                        </md-select>
+                      </md-input-container>
+                    </div>
 
-              </md-card-content>
+                    <!-- Faker Type -->
+                    <div layout="row">
+                      <md-input-container flex="45">
+                        <label>Faker</label>
+                        <md-select ng-model="property.selected.faker">
+                          <md-optgroup>
+                            <label>General</label>
+                            <md-option value="random.number">Number</md-option>
+                            <md-option value="random.boolean">Boolean</md-option>
+                            <md-option value="internet.color">Color</md-option>
+                            <md-option value="internet.email">Email</md-option>
+                            <md-option value="finance.currencyName">Currency</md-option>
+                            <md-option value="system.fileName">File name</md-option>
+                            <md-option value="company.companyName">Company name</md-option>
 
-              <md-card-actions layout="row" layout-align="end center">
-                <md-button class="md-raised md-primary" ng-click="property.submit(property.selected)">Submit</md-button>
-              </md-card-actions>
+                            <label>Personal</label>
+                            <md-option value="name.firstName">First name</md-option>
+                            <md-option value="name.lastName">Last name</md-option>
+                            <md-option value="name.jobTitle">Job title</md-option>
+
+                            <label>Location</label>
+                            <md-option value="address.country">Country</md-option>
+                            <md-option value="address.city">City</md-option>
+                            <md-option value="address.streetName">Street</md-option>
+                            <md-option value="address.latitude">Latitude</md-option>
+                            <md-option value="address.longitude">Longitude</md-option>
+
+                            <label>Date and Time</label>
+                            <md-option value="date">Any date</md-option>
+                            <md-option value="date.past">In the past</md-option>
+                            <md-option value="date.future">In the Future</md-option>
+                            </mdoptgroup>
+
+                        </md-select>
+                      </md-input-container>
+
+                      <div flex></div>
+
+                    </div>
+                  </div>
+
+                  <md-divider class="vertical"></md-divider>
+
+                  <div layout-align="top center" class="column property-toggle">
+                    <!-- Is Required -->
+
+                    <md-input-container class="md-input-has-value">
+                      <label>Required</label>
+                      <md-switch class="md-primary" ng-model="property.selected.required"></md-switch>
+                    </md-input-container>
+
+                    <!-- Is Array -->
+                    <md-input-container class="md-input-has-value">
+                      <label>Array</label>
+                      <md-switch class="md-primary" ng-model="property.selected.isArray"></md-switch>
+                    </md-input-container>
+
+                    <!-- Is Visible -->
+                    <md-input-container class="md-input-has-value">
+                      <label>Visible</label>
+                      <md-switch class="md-primary" ng-model="property.selected.isVisible"></md-switch>
+                    </md-input-container>
+
+                    <!-- Is Editable -->
+                    <md-input-container class="md-input-has-value">
+                      <label>Editable</label>
+                      <md-switch class="md-primary" ng-model="property.selected.isEditable"></md-switch>
+                    </md-input-container>
+
+                    <!-- Is Searchable -->
+                    <md-input-container class="md-input-has-value">
+                      <label>Searchable</label>
+                      <md-switch class="md-primary" ng-model="property.selected.isSearchable"></md-switch>
+                    </md-input-container>
+
+                    <!-- Is Basic Info -->
+                    <md-input-container class="md-input-has-value">
+                      <label>Basic Info</label>
+                      <md-switch class="md-primary" ng-model="property.selected.isBasicInfo"></md-switch>
+                    </md-input-container>
+
+                    <!-- Is View Profile -->
+                    <md-input-container class="md-input-has-value">
+                      <label>View Profile</label>
+                      <md-switch class="md-primary" ng-model="property.selected.isViewProfile"></md-switch>
+                    </md-input-container>
+
+                    <!-- Needs Customer Validation -->
+                    <md-input-container class="md-input-has-value">
+                      <label>Customer Validation</label>
+                      <md-switch class="md-primary" ng-model="property.selected.isCustomerValidation"></md-switch>
+                    </md-input-container>
+
+                  </div>
+
+                </md-card-content>
+
+                <md-card-actions layout="row" layout-align="end center">
+                  <md-button class="md-raised md-primary" ng-disabled="frmPropertyEdit.$pristine" ng-click="property.submit(property.selected)">Submit</md-button>
+                </md-card-actions>
+
+              </form>
             </md-card>
 
           </md-card>
@@ -388,9 +550,9 @@
             </md-card-content>
 
             <md-card-actions layout="row" layout-align="center center">
-               <md-input-container flex>
-                    <input ng-model="enum.newValue" />
-                  </md-input-container>
+              <md-input-container flex>
+                <input ng-model="enum.newValue" />
+              </md-input-container>
               <md-button class="md-raised md-primary" ng-disabled="!enum.newValue" ng-click="enum.add(enum.newValue)">Add</md-button>
             </md-card-actions>
 

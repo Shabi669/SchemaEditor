@@ -115,12 +115,6 @@ var ngPageController = ngApplication.controller('ngPageController', ['$scope', '
       metaType: 'entity'
     }
   }
-  $scope.entity.isDirty = function ()
-  {
-    return $scope.entity.original
-      && $scope.entity.original.base == $scope.entity.selected.base
-      && $scope.entity.original.title == $scope.entity.selected.title;
-  }
   $scope.entity.selectFirst = function ()
   {
     $timeout(function ()
@@ -160,6 +154,7 @@ var ngPageController = ngApplication.controller('ngPageController', ['$scope', '
 
     $scope.property.selected = null;
     $scope.entity.original = entity;
+    $scope.frmEntityInfo.$setPristine();
     $scope.entity.selected = angular.copy(entity);
 
     if (entity)
@@ -187,7 +182,7 @@ var ngPageController = ngApplication.controller('ngPageController', ['$scope', '
       entity._id = Entities.insert(entity);
     }
 
-    $('#editEntityModal').modal('hide');
+    $scope.frmEntityInfo.$setPristine();
 
     $scope.entity.select(entity);
   }
@@ -200,7 +195,7 @@ var ngPageController = ngApplication.controller('ngPageController', ['$scope', '
 
     console.log('download entity - ' + entity.title);
 
-    window.location = '/file/' + entity._id;
+    window.location = '/file/{0}/{1}'.format(entity._id, mode);
     //$http.get('/file/' + entity._id);
   }
   $scope.entity.keyDown = function (event)
@@ -248,6 +243,7 @@ var ngPageController = ngApplication.controller('ngPageController', ['$scope', '
       $scope.entity.selected.values = [];
 
     $scope.entity.selected.values.push(value);
+    $scope.entity.submit($scope.entity.selected);
 
     $scope.enum.newValue = '';
   }
@@ -271,6 +267,7 @@ var ngPageController = ngApplication.controller('ngPageController', ['$scope', '
   $scope.property.select = function (property)
   {
     $scope.property.original = property;
+    $scope.frmPropertyEdit.$setPristine();
     $scope.property.selected = angular.copy(property);
   }
   $scope.property.edit = function (property)
@@ -335,6 +332,7 @@ var ngPageController = ngApplication.controller('ngPageController', ['$scope', '
       //$scope.entity.properties = $scope.property.getDerived(entity);
     }
 
+    $scope.frmPropertyEdit.$setPristine();
     $scope.property.selected = null;
   }
   $scope.property.keyDown = function (event)

@@ -1,7 +1,7 @@
 html, body
 {
     height:100%;
-    background: #fff0f0;
+    background: #f0f0f0;
 }
 
 .invalid
@@ -57,7 +57,7 @@ html, body
 }
 .main .navbar
 {
-    background: #f3f3f3;
+    background: #ffffff;
     border-bottom: 1px solid #e0e0e0;
     padding: 0px 15px;
     height: 60px;
@@ -140,7 +140,7 @@ html, body
 .main .main-content
 {
     position:absolute;
-    top:100px;
+    top:70px;
     bottom:40px;
     left:0px;
     right:0px;
@@ -215,6 +215,11 @@ html, body
 md-card
 {
     overflow: hidden;
+    background: #ffffff;
+}
+md-list .md-subheader
+{
+    background: #ffffff;
 }
 .property-edit-panel
 {
@@ -225,6 +230,10 @@ md-card
     background: #ffffff;
     margin: 0px;
 }
+.property-edit-panel .column
+{
+    padding: 0px 5px;
+}
 .property-edit-panel md-card-content
 {
     padding-top: 16px;
@@ -232,6 +241,11 @@ md-card
 .property-edit-panel md-switch
 {
     margin-top: 0px;
+}
+.property-edit-panel .property-toggle,
+.property-edit-panel .property-toggle md-input-container
+{
+    width:170px;
 }
 
 @-webkit-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
@@ -306,7 +320,7 @@ md-card md-card-title .md-icon-button
 {
     cursor: pointer;
 }
-.side-bar md-card-content
+md-card-content
 {
     overflow: hidden;
     overflow-y: auto; 
@@ -373,4 +387,24 @@ md-card
     position: relative;
     bottom: -3px;
     margin:0px;
+}
+
+md-divider .vertical
+{
+  border-top-width: 0;
+  border-right-width: 2px;
+  border-right-style: solid;
+  height: 100%;
+}
+
+md-tabs
+{}
+md-tabs md-ink-bar
+{
+    display: none;
+}
+md-tabs.md-default-theme.md-primary>md-tabs-wrapper>md-tabs-canvas>md-pagination-wrapper>md-tab-item:not([disabled]).md-active, 
+{
+    color: rgb(57,73,171);
+    background: #ffffff;
 }

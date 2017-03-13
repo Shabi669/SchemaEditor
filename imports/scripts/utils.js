@@ -28,6 +28,28 @@ String.prototype.camelCase = function ()
 
     return output;
 }
+String.prototype.pascalCase = function (allUpperCase)
+{
+    var output = '';
+
+    for (var i = 0; i < this.length; i++)
+    {
+        var ch = this.charAt(i);
+
+        if (ch == ' ')
+            continue;
+
+        if (i > 0 && ch == ch.toUpperCase())
+            output = output + "_";
+
+        if (allUpperCase)
+            output = output + ch.toUpperCase();   
+        else
+            output = output + ch;   
+    }
+
+    return output;
+}
 
 export default {
     string: {
